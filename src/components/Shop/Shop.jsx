@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css'
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
-    const [card, setCard] = useState([])
+    const [cart, setCart] = useState([])
 
     useEffect(() =>{
         fetch('products.json')
@@ -12,11 +13,11 @@ const Shop = () => {
         .then(data => setProducts(data))
     },[]);
 
-    const handleAddToCard = (product) =>{
+    const handleAddToCart = (product) =>{
         // console.log(product);
         // state immutable, so push kora jabena
-        const newCard = [...card, product];
-        setCard(newCard);
+        const newCart = [...cart, product];
+        setCart(newCart);
     }
 
     return (
@@ -27,13 +28,12 @@ const Shop = () => {
                     products.map(product => <Product
                         key ={product.id}
                         product = {product}
-                        handleAddToCard ={handleAddToCard}
+                        handleAddToCard ={handleAddToCart}
                         ></Product>)
                 }
             </div>
             <div className="cart-container">
-                <h4>Order Summary</h4>
-                <p>Selected Items: {card.length}</p>
+                <Cart cart= {cart}></Cart>
             </div>
         </div>
     );
