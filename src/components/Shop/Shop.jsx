@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { addToDb, getShoppingCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css'
@@ -13,11 +14,35 @@ const Shop = () => {
         .then(data => setProducts(data))
     },[]);
 
+    useEffect(()=>{
+        const storedCart = getShoppingCart();
+
+        const savedCard = [];
+        // console.log(storedCart);
+        //step:1 get id of the addedProduct
+        for(const id in storedCart){
+            // console.log(id);
+            //step:2 get the product from products state by using id
+            const addedProduct = products.find(product => product.id === id);
+            // step:3 add quantity of the product
+            if(addedProduct){
+                const quantity = storedCart[id];
+                addedProduct.quantity = quantity;
+            // step:4
+                savedCard.push(addedProduct);
+            }
+            //   console.log(addedProduct);
+        }
+        // step:5 set the cart
+        setCart(savedCard);
+    }, [products])
+
     const handleAddToCart = (product) =>{
         // console.log(product);
         // state immutable, so push kora jabena
         const newCart = [...cart, product];
         setCart(newCart);
+        addToDb(product.id)
     }
 
     return (
